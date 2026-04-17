@@ -1,0 +1,423 @@
+{% extends 'base.html' %}
+
+{% block title %}Dashboard - infobeans RAI{% endblock %}
+
+{% block extra_css %}
+<style>
+    /* Dashboard specific styles */
+    .dashboard-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: var(--space-8);
+        flex-wrap: wrap;
+        gap: var(--space-4);
+    }
+    
+    .dashboard-title {
+        font-size: var(--text-3xl);
+        font-weight: var(--font-bold);
+        color: var(--text-primary);
+    }
+    
+    .dashboard-controls {
+        display: flex;
+        gap: var(--space-4);
+        flex-wrap: wrap;
+    }
+    
+    .control-group {
+        display: flex;
+        flex-direction: column;
+        gap: var(--space-2);
+    }
+    
+    .control-label {
+        font-size: var(--text-xs);
+        font-weight: var(--font-medium);
+        color: var(--text-secondary);
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+    }
+    
+    .select-input {
+        padding: var(--space-2) var(--space-4);
+        border: 1px solid var(--border-color);
+        border-radius: var(--border-radius);
+        font-size: var(--text-sm);
+        color: var(--text-primary);
+        background-color: var(--bg-primary);
+        cursor: pointer;
+        transition: all 0.2s ease;
+    }
+    
+    .select-input:hover {
+        border-color: var(--primary-blue-light);
+    }
+    
+    .select-input:focus {
+        border-color: var(--primary-blue);
+        box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+    }
+    
+    .btn-primary {
+        padding: var(--space-2) var(--space-6);
+        background-color: var(--primary-blue);
+        color: white;
+        border: none;
+        border-radius: var(--border-radius);
+        font-size: var(--text-sm);
+        font-weight: var(--font-semibold);
+        cursor: pointer;
+        transition: all 0.2s ease;
+    }
+    
+    .btn-primary:hover {
+        background-color: var(--primary-blue-hover);
+        transform: translateY(-1px);
+        box-shadow: var(--shadow-md);
+    }
+    
+    .btn-primary:active {
+        transform: translateY(0);
+    }
+    
+    /* Metrics Cards */
+    .metrics-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: var(--space-6);
+        margin-bottom: var(--space-8);
+    }
+    
+    .metric-card {
+        background-color: var(--bg-primary);
+        border: 1px solid var(--border-color);
+        border-radius: var(--border-radius);
+        padding: var(--space-6);
+        box-shadow: var(--shadow-sm);
+        transition: all 0.2s ease;
+    }
+    
+    .metric-card:hover {
+        box-shadow: var(--shadow-md);
+        transform: translateY(-2px);
+    }
+    
+    .metric-label {
+        font-size: var(--text-sm);
+        color: var(--text-secondary);
+        font-weight: var(--font-medium);
+        margin-bottom: var(--space-3);
+    }
+    
+    .metric-value {
+        font-size: var(--text-4xl);
+        font-weight: var(--font-bold);
+        color: var(--text-primary);
+        margin-bottom: var(--space-2);
+    }
+    
+    .metric-trend {
+        display: flex;
+        align-items: center;
+        gap: var(--space-2);
+        font-size: var(--text-sm);
+    }
+    
+    .trend-up {
+        color: var(--success-green);
+    }
+    
+    .trend-down {
+        color: var(--danger-red);
+    }
+    
+    .trend-icon {
+        font-size: var(--text-lg);
+    }
+    
+    /* Test Suites Section */
+    .suites-section {
+        background-color: var(--bg-primary);
+        border: 1px solid var(--border-color);
+        border-radius: var(--border-radius);
+        padding: var(--space-6);
+        box-shadow: var(--shadow-sm);
+    }
+    
+    .section-title {
+        font-size: var(--text-xl);
+        font-weight: var(--font-semibold);
+        color: var(--text-primary);
+        margin-bottom: var(--space-6);
+    }
+    
+    .suites-list {
+        display: flex;
+        flex-direction: column;
+        gap: var(--space-4);
+    }
+    
+    .suite-row {
+        display: grid;
+        grid-template-columns: 2fr 80px 100px 80px 1fr;
+        gap: var(--space-4);
+        align-items: center;
+        padding: var(--space-4);
+        border: 1px solid var(--border-color);
+        border-radius: calc(var(--border-radius) * 0.75);
+        transition: all 0.2s ease;
+    }
+    
+    .suite-row:hover {
+        background-color: var(--bg-hover);
+        border-color: var(--primary-blue-light);
+    }
+    
+    .suite-name {
+        font-weight: var(--font-medium);
+        color: var(--text-primary);
+    }
+    
+    .suite-type {
+        display: inline-block;
+        padding: var(--space-1) var(--space-3);
+        border-radius: calc(var(--border-radius) * 0.5);
+        font-size: var(--text-xs);
+        font-weight: var(--font-semibold);
+        text-align: center;
+    }
+    
+    .type-ui {
+        background-color: #dbeafe;
+        color: #1e40af;
+    }
+    
+    .type-api {
+        background-color: #d1fae5;
+        color: #065f46;
+    }
+    
+    .type-db {
+        background-color: #fef3c7;
+        color: #92400e;
+    }
+    
+    .suite-ratio {
+        font-size: var(--text-sm);
+        color: var(--text-secondary);
+    }
+    
+    .suite-status {
+        width: 12px;
+        height: 12px;
+        border-radius: 50%;
+    }
+    
+    .status-pass {
+        background-color: var(--success-green);
+    }
+    
+    .status-fail {
+        background-color: var(--danger-red);
+    }
+    
+    .status-partial {
+        background-color: var(--warning-yellow);
+    }
+    
+    .suite-actions {
+        display: flex;
+        gap: var(--space-2);
+        justify-content: flex-end;
+    }
+    
+    .btn-action {
+        padding: var(--space-1) var(--space-3);
+        font-size: var(--text-xs);
+        background-color: transparent;
+        border: 1px solid var(--border-color);
+        border-radius: calc(var(--border-radius) * 0.5);
+        cursor: pointer;
+        transition: all 0.2s ease;
+        white-space: nowrap;
+    }
+    
+    .btn-action:hover {
+        background-color: var(--bg-hover);
+        border-color: var(--primary-blue-light);
+        color: var(--primary-blue);
+    }
+    
+    /* Empty state */
+    .empty-state {
+        text-align: center;
+        padding: var(--space-12);
+        color: var(--text-secondary);
+    }
+    
+    .empty-state-icon {
+        font-size: 4rem;
+        margin-bottom: var(--space-4);
+    }
+    
+    /* Responsive adjustments */
+    @media (max-width: 768px) {
+        .suite-row {
+            grid-template-columns: 1fr;
+            gap: var(--space-2);
+        }
+        
+        .suite-actions {
+            justify-content: flex-start;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="dashboard-container">
+    <!-- Dashboard Header -->
+    <div class="dashboard-header">
+        <h1 class="dashboard-title">Dashboard</h1>
+        
+        <div class="dashboard-controls">
+            <div class="control-group">
+                <label class="control-label" for="trend-select">Trend Period</label>
+                <select id="trend-select" class="select-input" onchange="updateTrend(this.value)">
+                    <option value="runs_5" {% if trend_period == 'runs_5' %}selected{% endif %}>Last 5 Runs</option>
+                    <option value="runs_10" {% if trend_period == 'runs_10' %}selected{% endif %}>Last 10 Runs</option>
+                    <option value="runs_20" {% if trend_period == 'runs_20' %}selected{% endif %}>Last 20 Runs</option>
+                    <option value="runs_50" {% if trend_period == 'runs_50' %}selected{% endif %}>Last 50 Runs</option>
+                    <option value="1d" {% if trend_period == '1d' %}selected{% endif %}>Last 1 Day</option>
+                    <option value="7d" {% if trend_period == '7d' %}selected{% endif %}>Last 7 Days</option>
+                    <option value="30d" {% if trend_period == '30d' %}selected{% endif %}>Last 30 Days</option>
+                    <option value="90d" {% if trend_period == '90d' %}selected{% endif %}>Last 90 Days</option>
+                </select>
+            </div>
+            
+            {% if user_role in 'admin,maintainer' %}
+            <div class="control-group">
+                <label class="control-label">&nbsp;</label>
+                <button class="btn-primary" onclick="runTests()">Run Tests</button>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+    
+    <!-- Metrics Cards -->
+    {% if metrics %}
+    <div class="metrics-grid">
+        <!-- Success Rate -->
+        <div class="metric-card">
+            <div class="metric-label">Success Rate</div>
+            <div class="metric-value">{{ last_run.success_rate }}%</div>
+            {% if metrics.trend %}
+            <div class="metric-trend {% if metrics.trend.success_rate_change >= 0 %}trend-up{% else %}trend-down{% endif %}">
+                <span class="trend-icon">{% if metrics.trend.success_rate_change >= 0 %}↑{% else %}↓{% endif %}</span>
+                <span>{% if metrics.trend.success_rate_change < 0 %}{{ metrics.trend.success_rate_change|slice:"1:" }}{% else %}{{ metrics.trend.success_rate_change }}{% endif %}% vs {{ metrics.trend.period }}</span>
+            </div>
+            {% endif %}
+        </div>
+        
+        <!-- Duration -->
+        <div class="metric-card">
+            <div class="metric-label">Duration</div>
+            <div class="metric-value">{{ last_run.duration }}</div>
+            {% if metrics.trend %}
+            <div class="metric-trend {% if metrics.trend.duration_change <= 0 %}trend-up{% else %}trend-down{% endif %}">
+                <span class="trend-icon">{% if metrics.trend.duration_change <= 0 %}↑{% else %}↓{% endif %}</span>
+                <span>{% if metrics.trend.duration_change < 0 %}{{ metrics.trend.duration_change|slice:"1:" }}{% else %}{{ metrics.trend.duration_change }}{% endif %}s vs {{ metrics.trend.period }}</span>
+            </div>
+            {% endif %}
+        </div>
+        
+        <!-- Test Suites -->
+        <div class="metric-card">
+            <div class="metric-label">Test Suites</div>
+            <div class="metric-value">{{ metrics.test_suites }}</div>
+        </div>
+        
+        <!-- Flaky Tests -->
+        <div class="metric-card">
+            <div class="metric-label">Flaky Tests</div>
+            <div class="metric-value" style="color: {% if metrics.flaky_tests > 0 %}var(--warning-yellow){% else %}var(--success-green){% endif %}">
+                {{ metrics.flaky_tests }}
+            </div>
+        </div>
+    </div>
+    {% endif %}
+    
+    <!-- Test Suites List -->
+    <div class="suites-section">
+        <h2 class="section-title">Test Suites</h2>
+        
+        {% if suites %}
+        <div class="suites-list">
+            {% for suite in suites %}
+            <div class="suite-row">
+                <div class="suite-name">{{ suite.name }}</div>
+                
+                <div class="suite-type type-{{ suite.type|lower }}">
+                    {{ suite.type }}
+                </div>
+                
+                <div class="suite-ratio">
+                    <span style="color: var(--success-green)">{{ suite.passed }}</span> / 
+                    <span style="color: var(--danger-red)">{{ suite.failed }}</span>
+                </div>
+                
+                <div>
+                    <span class="suite-status status-{{ suite.status|lower }}"></span>
+                </div>
+                
+                <div class="suite-actions">
+                    <button class="btn-action" onclick="viewAllure({{ suite.id }})">Allure</button>
+                    <button class="btn-action" onclick="pushToJira({{ suite.id }})">Jira</button>
+                    <button class="btn-action" onclick="viewIntelligence({{ suite.id }})">Intelligence</button>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <div class="empty-state">
+            <div class="empty-state-icon">📊</div>
+            <p>No test runs yet. Click "Run Tests" to get started.</p>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // Trend period change
+    function updateTrend(period) {
+        const url = new URL(window.location);
+        url.searchParams.set('trend_period', period);
+        window.location = url.toString();
+    }
+    
+    // Run tests button
+    function runTests() {
+        // TODO: Implement test run trigger
+        alert('Run Tests functionality will be implemented with backend API');
+    }
+    
+    // Suite actions
+    function viewAllure(suiteId) {
+        // TODO: Implement Allure report view
+        alert('Allure report for suite ' + suiteId);
+    }
+    
+    function pushToJira(suiteId) {
+        // TODO: Implement Jira integration
+        alert('Push to Jira for suite ' + suiteId);
+    }
+    
+    function viewIntelligence(suiteId) {
+        window.location.href = '/intelligence?suite_id=' + suiteId;
+    }
+</script>
+{% endblock %}

@@ -1,0 +1,387 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="infobeans RAI - Test Automation Dashboard">
+    <title>{% block title %}infobeans RAI{% endblock %}</title>
+    
+    <style>
+        /* ===== CSS VARIABLES ===== */
+        :root {
+            /* Primary Colors */
+            --primary-blue: #2563eb;
+            --primary-blue-hover: #1d4ed8;
+            --primary-blue-light: #3b82f6;
+            
+            /* Status Colors */
+            --success-green: #10b981;
+            --success-green-light: #34d399;
+            --warning-yellow: #f59e0b;
+            --warning-yellow-light: #fbbf24;
+            --danger-red: #ef4444;
+            --danger-red-light: #f87171;
+            
+            /* Neutral Colors */
+            --gray-50: #f9fafb;
+            --gray-100: #f3f4f6;
+            --gray-200: #e5e7eb;
+            --gray-300: #d1d5db;
+            --gray-400: #9ca3af;
+            --gray-500: #6b7280;
+            --gray-600: #4b5563;
+            --gray-700: #374151;
+            --gray-800: #1f2937;
+            --gray-900: #111827;
+            
+            /* Background */
+            --bg-primary: #ffffff;
+            --bg-secondary: #f9fafb;
+            --bg-hover: #f3f4f6;
+            
+            /* Text */
+            --text-primary: #111827;
+            --text-secondary: #6b7280;
+            --text-muted: #9ca3af;
+            
+            /* Border */
+            --border-color: #e5e7eb;
+            --border-radius: 0.5rem;
+            
+            /* Shadow */
+            --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+            --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+            
+            /* Typography */
+            --text-xs: 0.75rem;
+            --text-sm: 0.875rem;
+            --text-base: 1rem;
+            --text-lg: 1.125rem;
+            --text-xl: 1.25rem;
+            --text-2xl: 1.5rem;
+            --text-3xl: 1.875rem;
+            --text-4xl: 2.25rem;
+            
+            --font-normal: 400;
+            --font-medium: 500;
+            --font-semibold: 600;
+            --font-bold: 700;
+            
+            --leading-tight: 1.25;
+            --leading-normal: 1.5;
+            --leading-relaxed: 1.75;
+            
+            /* Spacing */
+            --space-1: 0.25rem;
+            --space-2: 0.5rem;
+            --space-3: 0.75rem;
+            --space-4: 1rem;
+            --space-5: 1.25rem;
+            --space-6: 1.5rem;
+            --space-8: 2rem;
+            --space-10: 2.5rem;
+            --space-12: 3rem;
+        }
+        
+        /* ===== RESET & BASE STYLES ===== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        html {
+            font-size: 16px;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+        
+        body {
+            font-family: system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            font-size: var(--text-base);
+            line-height: var(--leading-normal);
+            color: var(--text-primary);
+            background-color: var(--bg-secondary);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        /* ===== HEADER STYLES ===== */
+        .site-header {
+            background-color: var(--bg-primary);
+            border-bottom: 1px solid var(--border-color);
+            box-shadow: var(--shadow-sm);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            height: 64px;
+        }
+        
+        .header-container {
+            max-width: 1280px;
+            margin: 0 auto;
+            padding: 0 var(--space-6);
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        
+        .header-brand {
+            display: flex;
+            align-items: center;
+            gap: var(--space-3);
+        }
+        
+        .brand-logo {
+            font-size: var(--text-xl);
+            font-weight: var(--font-bold);
+            color: var(--primary-blue);
+            text-decoration: none;
+            letter-spacing: -0.02em;
+        }
+        
+        .brand-logo:hover {
+            color: var(--primary-blue-hover);
+        }
+        
+        .brand-subtitle {
+            font-size: var(--text-xs);
+            color: var(--text-secondary);
+            font-weight: var(--font-medium);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+        
+        .header-nav {
+            display: none; /* Hidden on mobile, shown on tablet+ */
+        }
+        
+        .header-nav ul {
+            display: flex;
+            list-style: none;
+            gap: var(--space-6);
+        }
+        
+        .header-nav a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-weight: var(--font-medium);
+            font-size: var(--text-sm);
+            padding: var(--space-2) var(--space-3);
+            border-radius: calc(var(--border-radius) * 0.5);
+            transition: all 0.2s ease;
+        }
+        
+        .header-nav a:hover {
+            color: var(--text-primary);
+            background-color: var(--bg-hover);
+        }
+        
+        .header-nav a.active {
+            color: var(--primary-blue);
+            background-color: var(--bg-hover);
+        }
+        
+        .header-user {
+            display: flex;
+            align-items: center;
+            gap: var(--space-3);
+        }
+        
+        .user-info {
+            display: none; /* Hidden on mobile, shown on tablet+ */
+            text-align: right;
+        }
+        
+        .user-name {
+            font-size: var(--text-sm);
+            font-weight: var(--font-medium);
+            color: var(--text-primary);
+        }
+        
+        .user-role {
+            font-size: var(--text-xs);
+            color: var(--text-secondary);
+        }
+        
+        .user-avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background-color: var(--primary-blue);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: var(--font-semibold);
+            font-size: var(--text-sm);
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+        }
+        
+        .user-avatar:hover {
+            background-color: var(--primary-blue-hover);
+        }
+        
+        /* ===== MAIN CONTENT STYLES ===== */
+        .site-main {
+            flex: 1;
+            width: 100%;
+            max-width: 1280px;
+            margin: 0 auto;
+            padding: var(--space-6);
+        }
+        
+        /* ===== FOOTER STYLES ===== */
+        .site-footer {
+            background-color: var(--gray-50);
+            border-top: 1px solid var(--border-color);
+            padding: var(--space-6);
+            margin-top: auto;
+        }
+        
+        .footer-container {
+            max-width: 1280px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: var(--space-4);
+        }
+        
+        .footer-copyright {
+            font-size: var(--text-sm);
+            color: var(--text-secondary);
+        }
+        
+        .footer-version {
+            font-size: var(--text-xs);
+            color: var(--text-muted);
+            font-family: 'Courier New', monospace;
+        }
+        
+        /* ===== UTILITY CLASSES ===== */
+        .sr-only {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            white-space: nowrap;
+            border-width: 0;
+        }
+        
+        /* ===== RESPONSIVE STYLES ===== */
+        
+        /* Tablet: 768px and up */
+        @media (min-width: 768px) {
+            .header-nav {
+                display: block;
+            }
+            
+            .user-info {
+                display: block;
+            }
+            
+            .site-main {
+                padding: var(--space-8);
+            }
+        }
+        
+        /* Desktop: 1024px and up */
+        @media (min-width: 1024px) {
+            .site-main {
+                padding: var(--space-10) var(--space-8);
+            }
+        }
+        
+        /* Large desktop: 1280px and up */
+        @media (min-width: 1280px) {
+            .site-main {
+                padding: var(--space-12) var(--space-8);
+            }
+        }
+        
+        /* ===== FOCUS STYLES (Accessibility) ===== */
+        *:focus {
+            outline: 2px solid var(--primary-blue);
+            outline-offset: 2px;
+        }
+        
+        *:focus:not(:focus-visible) {
+            outline: none;
+        }
+        
+        *:focus-visible {
+            outline: 2px solid var(--primary-blue);
+            outline-offset: 2px;
+        }
+    </style>
+    
+    {% block extra_css %}
+    <!-- Page-specific CSS will be added here -->
+    {% endblock %}
+</head>
+<body>
+    <!-- ===== HEADER ===== -->
+    <header class="site-header" role="banner">
+        <div class="header-container">
+            <!-- Brand/Logo -->
+            <div class="header-brand">
+                <a href="/" class="brand-logo" aria-label="infobeans RAI Home">
+                    infobeans <span class="brand-subtitle">RAI</span>
+                </a>
+            </div>
+            
+            <!-- Navigation -->
+            <nav class="header-nav" role="navigation" aria-label="Main navigation">
+                <ul>
+                    <li><a href="/dashboard" class="active" aria-current="page">Dashboard</a></li>
+                    <li><a href="/intelligence">Intelligence</a></li>
+                </ul>
+            </nav>
+            
+            <!-- User Menu -->
+            <div class="header-user">
+                <div class="user-info">
+                    <div class="user-name">Test User</div>
+                    <div class="user-role">Admin</div>
+                </div>
+                <div class="user-avatar" role="button" aria-label="User menu" tabindex="0">
+                    T
+                </div>
+            </div>
+        </div>
+    </header>
+    
+    <!-- ===== MAIN CONTENT ===== -->
+    <main class="site-main" role="main">
+        {% block content %}
+        <!-- Page content will be inserted here -->
+        {% endblock %}
+    </main>
+    
+    <!-- ===== FOOTER ===== -->
+    <footer class="site-footer" role="contentinfo">
+        <div class="footer-container">
+            <div class="footer-copyright">
+                © 2026 InfoBeans Technologies. All rights reserved.
+            </div>
+            <div class="footer-version">
+                infobeans RAI v1.0.0 | Build dev
+            </div>
+        </div>
+    </footer>
+    
+    {% block extra_js %}
+    <!-- Page-specific JavaScript will be added here -->
+    {% endblock %}
+</body>
+</html>

@@ -1,0 +1,120 @@
+{% extends 'base.html' %}
+{% block title %}Security Dashboard - Intelligence - infobeans RAI{% endblock %}
+{% block extra_css %}
+<style>
+    .intelligence-header { margin-bottom: 24px; }
+    .intelligence-title { font-size: 12px; color: #e63946; font-weight: 600; margin-bottom: 8px; text-transform: uppercase; }
+    .intelligence-subtitle { font-size: 24px; font-weight: 600; margin-bottom: 24px; }
+    .dashboard-tabs { display: flex; gap: 24px; border-bottom: 2px solid #e5e7eb; margin-bottom: 32px; }
+    .tab-link { padding: 12px 0; color: #6b7280; text-decoration: none; font-weight: 500; font-size: 14px; border-bottom: 2px solid transparent; margin-bottom: -2px; display: flex; align-items: center; gap: 8px; }
+    .tab-link.active { color: #e63946; border-bottom-color: #e63946; }
+    .metrics-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 24px; margin-bottom: 32px; }
+    .metric-card { background: white; border: 1px solid #e5e7eb; border-radius: 8px; padding: 24px; }
+    .metric-label { font-size: 11px; color: #6b7280; text-transform: uppercase; margin-bottom: 12px; }
+    .metric-value { font-size: 36px; font-weight: 700; margin-bottom: 4px; }
+    .metric-subtext { font-size: 11px; color: #6b7280; }
+    .data-table { background: white; border: 1px solid #e5e7eb; border-radius: 8px; overflow: hidden; margin-bottom: 24px; }
+    .data-table table { width: 100%; border-collapse: collapse; }
+    .data-table th { background: #f9fafb; padding: 16px; text-align: left; font-size: 11px; font-weight: 600; color: #6b7280; text-transform: uppercase; border-bottom: 1px solid #e5e7eb; }
+    .data-table td { padding: 16px; font-size: 14px; border-bottom: 1px solid #e5e7eb; }
+    .data-table tbody tr:hover { background: #f9fafb; }
+    .badge-low { background: #d1fae5; color: #065f46; padding: 2px 8px; border-radius: 4px; font-size: 11px; font-weight: 600; }
+    .badge-medium { background: #fef3c7; color: #92400e; padding: 2px 8px; border-radius: 4px; font-size: 11px; font-weight: 600; }
+    .content-section { background: white; border: 1px solid #e5e7eb; border-radius: 8px; padding: 24px; }
+    .section-title { font-size: 14px; font-weight: 600; margin-bottom: 16px; }
+</style>
+{% endblock %}
+{% block content %}
+<div class="intelligence-container">
+    <div class="intelligence-header">
+        <div class="intelligence-title">R&A Intelligence</div>
+        <h1 class="intelligence-subtitle">Intelligence Dashboards</h1>
+    </div>
+    <div class="dashboard-tabs">
+        <a href="/intelligence/usage" class="tab-link"><span>📊</span> Usage</a>
+        <a href="/intelligence/portfolio" class="tab-link"><span>📁</span> Portfolio</a>
+        <a href="/intelligence/finops" class="tab-link"><span>💰</span> FinOps</a>
+        <a href="/intelligence/security" class="tab-link active"><span>🔒</span> Security</a>
+    </div>
+    <div class="metrics-grid">
+        <div class="metric-card">
+            <div class="metric-label">Security Score</div>
+            <div class="metric-value" style="color:#10b981">{{ data.security_score }}/100</div>
+            <div class="metric-subtext">Last run 2 days ago</div>
+        </div>
+        <div class="metric-card">
+            <div class="metric-label">Attempts Blocked</div>
+            <div class="metric-value">12</div>
+            <div class="metric-subtext">Prompt injection, this month</div>
+        </div>
+        <div class="metric-card">
+            <div class="metric-label">PII Leakage Events</div>
+            <div class="metric-value" style="color:#10b981">{{ data.vulnerability_summary.critical }}</div>
+            <div class="metric-subtext">Auto-redacted: 7 fields</div>
+        </div>
+        <div class="metric-card">
+            <div class="metric-label">Model Safety Compliance</div>
+            <div class="metric-value" style="color:#10b981">99.2%</div>
+            <div class="metric-subtext">3 outputs flagged for review</div>
+        </div>
+    </div>
+    <div class="data-table">
+        <table>
+            <thead>
+                <tr>
+                    <th>Category</th>
+                    <th>Tests</th>
+                    <th>Pass Rate</th>
+                    <th>Risk</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Prompt Injection</td>
+                    <td>48</td>
+                    <td style="color:#10b981;font-weight:600">100%</td>
+                    <td><span class="badge-low">Low</span></td>
+                </tr>
+                <tr>
+                    <td>Auth Bypass (UI)</td>
+                    <td>24</td>
+                    <td style="color:#10b981;font-weight:600">96%</td>
+                    <td><span class="badge-low">Low</span></td>
+                </tr>
+                <tr>
+                    <td>Input Validation</td>
+                    <td>36</td>
+                    <td style="color:#f59e0b;font-weight:600">92%</td>
+                    <td><span class="badge-medium">Medium</span></td>
+                </tr>
+                <tr>
+                    <td>Data Exposure (API)</td>
+                    <td>18</td>
+                    <td style="color:#10b981;font-weight:600">100%</td>
+                    <td><span class="badge-low">Low</span></td>
+                </tr>
+                <tr>
+                    <td>PII in Test Artifacts</td>
+                    <td>12</td>
+                    <td style="color:#10b981;font-weight:600">100%</td>
+                    <td><span class="badge-low">Low</span></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <div class="content-section">
+        <div class="section-title">Model Output Governance</div>
+        <p style="margin:12px 0"><strong>Safety compliance rate:</strong> 99.2%</p>
+        <p style="margin:12px 0"><strong>Outputs flagged for review:</strong> 3</p>
+        <p style="margin:12px 0"><strong>Auto-redacted fields:</strong> 7 (SSN, card, routing)</p>
+        <p style="margin:12px 0"><strong>PII leakage events:</strong> 0</p>
+        <div style="margin-top:24px">
+            <div class="section-title">Red Team Cadence</div>
+            <p style="font-size:14px;color:#6b7280">Mar 22, 2026: <span style="color:#10b981;font-weight:600">94 / 100</span></p>
+            <p style="font-size:14px;color:#6b7280">Mar 15, 2026: <span style="color:#10b981;font-weight:600">92 / 100</span></p>
+            <p style="font-size:14px;color:#6b7280">Mar 8, 2026: <span style="color:#f59e0b;font-weight:600">88 / 100</span></p>
+            <p style="font-size:14px;color:#6b7280">Mar 1, 2026: <span style="color:#f59e0b;font-weight:600">85 / 100</span></p>
+        </div>
+    </div>
+</div>
+{% endblock %}

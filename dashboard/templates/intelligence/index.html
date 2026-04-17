@@ -1,0 +1,161 @@
+{% extends 'base.html' %}
+
+{% block title %}Intelligence Dashboard - infobeans RAI{% endblock %}
+
+{% block extra_css %}
+<style>
+    .intelligence-container {
+        max-width: 1200px;
+        margin: 0 auto;
+    }
+    
+    .intelligence-header {
+        margin-bottom: var(--space-8);
+    }
+    
+    .intelligence-title {
+        font-size: var(--text-3xl);
+        font-weight: var(--font-bold);
+        color: var(--text-primary);
+        margin-bottom: var(--space-2);
+    }
+    
+    .intelligence-subtitle {
+        font-size: var(--text-lg);
+        color: var(--text-secondary);
+    }
+    
+    .dashboards-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: var(--space-6);
+        margin-bottom: var(--space-8);
+    }
+    
+    .dashboard-card {
+        background-color: var(--bg-primary);
+        border: 2px solid var(--border-color);
+        border-radius: var(--border-radius);
+        padding: var(--space-8);
+        cursor: pointer;
+        transition: all 0.3s ease;
+        text-decoration: none;
+        display: block;
+    }
+    
+    .dashboard-card:hover {
+        border-color: var(--primary-blue);
+        box-shadow: var(--shadow-lg);
+        transform: translateY(-4px);
+    }
+    
+    .dashboard-icon {
+        font-size: 3rem;
+        margin-bottom: var(--space-4);
+        display: block;
+    }
+    
+    .dashboard-name {
+        font-size: var(--text-xl);
+        font-weight: var(--font-semibold);
+        color: var(--text-primary);
+        margin-bottom: var(--space-2);
+    }
+    
+    .dashboard-description {
+        font-size: var(--text-sm);
+        color: var(--text-secondary);
+        line-height: var(--leading-relaxed);
+    }
+    
+    .dashboard-stats {
+        display: flex;
+        gap: var(--space-4);
+        margin-top: var(--space-4);
+        padding-top: var(--space-4);
+        border-top: 1px solid var(--border-color);
+        font-size: var(--text-xs);
+        color: var(--text-muted);
+    }
+    
+    /* Color themes for each dashboard */
+    .dashboard-usage .dashboard-icon { color: #3b82f6; }
+    .dashboard-usage:hover { border-color: #3b82f6; }
+    
+    .dashboard-portfolio .dashboard-icon { color: #10b981; }
+    .dashboard-portfolio:hover { border-color: #10b981; }
+    
+    .dashboard-finops .dashboard-icon { color: #f59e0b; }
+    .dashboard-finops:hover { border-color: #f59e0b; }
+    
+    .dashboard-security .dashboard-icon { color: #ef4444; }
+    .dashboard-security:hover { border-color: #ef4444; }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="intelligence-container">
+    <div class="intelligence-header">
+        <h1 class="intelligence-title">Intelligence Dashboards</h1>
+        <p class="intelligence-subtitle">
+            AI-powered insights and analytics for comprehensive test intelligence
+        </p>
+    </div>
+    
+    <div class="dashboards-grid">
+        <!-- Usage Dashboard -->
+        <a href="/intelligence/usage{% if suite_id %}?suite_id={{ suite_id }}{% endif %}" class="dashboard-card dashboard-usage">
+            <span class="dashboard-icon">📊</span>
+            <h3 class="dashboard-name">Usage</h3>
+            <p class="dashboard-description">
+                Track test execution patterns, resource utilization, and team activity metrics
+            </p>
+            <div class="dashboard-stats">
+                <span>Last updated: Today</span>
+            </div>
+        </a>
+        
+        <!-- Portfolio Dashboard -->
+        <a href="/intelligence/portfolio{% if suite_id %}?suite_id={{ suite_id }}{% endif %}" class="dashboard-card dashboard-portfolio">
+            <span class="dashboard-icon">📁</span>
+            <h3 class="dashboard-name">Portfolio</h3>
+            <p class="dashboard-description">
+                Overview of test suites, coverage metrics, and quality trends across projects
+            </p>
+            <div class="dashboard-stats">
+                <span>6 Projects Active</span>
+            </div>
+        </a>
+        
+        <!-- FinOps Dashboard -->
+        <a href="/intelligence/finops{% if suite_id %}?suite_id={{ suite_id }}{% endif %}" class="dashboard-card dashboard-finops">
+            <span class="dashboard-icon">💰</span>
+            <h3 class="dashboard-name">FinOps</h3>
+            <p class="dashboard-description">
+                Cost analysis, resource optimization, and ROI tracking for test infrastructure
+            </p>
+            <div class="dashboard-stats">
+                <span>Cost Tracking Enabled</span>
+            </div>
+        </a>
+        
+        <!-- Security Dashboard -->
+        <a href="/intelligence/security{% if suite_id %}?suite_id={{ suite_id }}{% endif %}" class="dashboard-card dashboard-security">
+            <span class="dashboard-icon">🔒</span>
+            <h3 class="dashboard-name">Security</h3>
+            <p class="dashboard-description">
+                Security testing insights, vulnerability trends, and compliance monitoring
+            </p>
+            <div class="dashboard-stats">
+                <span>0 Critical Issues</span>
+            </div>
+        </a>
+    </div>
+    
+    <div style="text-align: center; margin-top: var(--space-12);">
+        <a href="/dashboard" style="color: var(--primary-blue); text-decoration: none; font-weight: var(--font-medium);">
+            ← Back to Dashboard
+        </a>
+    </div>
+</div>
+{% endblock %}
